@@ -10,12 +10,9 @@ import click
 
 from . import DATETIME
 
-#DATETIME = datetime.datetime.now()
-
 #
 # ENVIRONMENT NAME constants
 #
-
 ENVNAME_DIARY_FILENAME="QUICKDIARY_FILENAME"
 ENVNAME_DATE_FORMAT="QUICKDIARY_DATE_FORMAT"
 ENVNAME_TIME_FORMAT="QUICKDIARY_TIME_FORMAT"
@@ -23,7 +20,8 @@ ENVNAME_TIME_FORMAT="QUICKDIARY_TIME_FORMAT"
 #
 # DEFAULT constants
 #
-DEFAULT_DIARY_FILENAME = os.path.expanduser("~/diary.quickdiary")
+#DEFAULT_DIARY_FILENAME = os.path.expanduser("~/diary.quickdiary")
+DEFAULT_DIARY_FILENAME = "~/diary.quickdiary"
 
 DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))  # without the zero padding
 DEFAULT_DATE_FORMAT = "%A, %B {day_of_month}, %Y"
@@ -83,19 +81,22 @@ def cli(filename, text):
     date_hash = sha256(date.encode("utf-8")).hexdigest()
     date_hash_string = "{date} [{date_hash}]".format(date=date,
                                                  date_hash=date_hash)
-    diary_file_exists = os.path.exists(filename)
+
+    filename_path = os.path.expanduser(filename)
+
+    diary_file_exists = os.path.exists(filename_path)
 
     add_date = bool(True)
 
     if diary_file_exists:  # then check if the current date was already added
-        with open(filename, 'r') as diary_file:
+        with open(os.path.expanduser(filename_path), 'r') as diary_file:
             for line in diary_file:
                 if date_hash_string == line.strip():
                     add_date = False
-
-    with open(filename, 'a') as diary_file:
-        click.echo("Writing to file '{filename}'"
-                   .format(filename=filename))
+    print("File '{}' doesn't exist. Creating...".format(filename_path))
+    with open(filename_path, 'a+') as diary_file:
+        click.echo("Writing to file '{filename_path}'"
+                   .format(filename_path=filename_path))
 
         if add_date:
             diary_file.write ("{date_hash_string}"
@@ -103,7 +104,7 @@ def cli(filename, text):
 
         diary_file.write ("\n\n{time}".format(time=time))
 
-    subprocess.call([EDITOR, EDITOR_OPTIONS, filename])
+    subprocess.call([EDITOR, EDITOR_OPTIONS, filename_path])
 
 
 if __name__ == "__main__":
