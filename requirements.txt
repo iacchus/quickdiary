@@ -1,0 +1,13 @@
+click==8.0.3
+distlib==0.3.4
+filelock==3.5.1
+packaging==21.3
+platformdirs==2.5.0
+pluggy==1.0.0
+py==1.11.0
+pyparsing==3.0.7
+-e git+ssh://git@github.com/iacchus/quickdiary.git@46421760f26a7465d31e3c1f0e072b768ede0cdf#egg=quickdiary
+six==1.16.0
+toml==0.10.2
+tox==3.24.5
+virtualenv==20.13.1
