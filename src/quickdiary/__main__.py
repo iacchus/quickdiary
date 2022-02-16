@@ -53,7 +53,8 @@ PRESET_EDITOR_PARAMS = os.getenv(key=ENVNAME_EDITOR_PARAMS,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
 @click.option("--prompt", "-p", "prompt", is_flag=True,
-              help="Shows a prompt to add entry, instead of opening the text editor")
+              help="Shows a prompt to add entry, instead of opening"\
+                   " the text editor.")
 def cli(filename, prompt):
 
     # `day_of_month` is the day of the month without the zero padding
