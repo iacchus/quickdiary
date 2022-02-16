@@ -50,8 +50,10 @@ PRESET_EDITOR_PARAMS = os.getenv(key=ENVNAME_EDITOR_PARAMS,
 
 @click.command()
 @click.option("--file", "-f", "filename", type=str,
-              default=PRESET_DIARY_FILENAME)
-@click.option("--prompt", "-p", "prompt", is_flag=True)
+              default=PRESET_DIARY_FILENAME, metavar="<filename>",
+              help="File to add entry")
+@click.option("--prompt", "-p", "prompt", is_flag=True,
+              help="Shows a prompt to add entry, instead of opening the text editor")
 def cli(filename, prompt):
 
     # `day_of_month` is the day of the month without the zero padding
@@ -81,7 +83,7 @@ def cli(filename, prompt):
     # will we use our embedded prompt for the entry or, intead, the user is
     #     going to use his $EDITOR?
     if prompt:
-        text = click.prompt('Add your entry for {}: '.format(time))
+        text = click.prompt('{}:'.format(time))
     else:
         text = None
 

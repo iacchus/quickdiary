@@ -26,6 +26,19 @@ quickdiary
 
 The name is long because is expected the user to create his own alias, for example, add to `.bashcr` or `.zshrc` or similar:
 
+## Options
+
+```
+$ quickdiary --help
+Usage: quickdiary [OPTIONS]
+
+Options:
+  -f, --file <filename>  File to add entry
+  -p, --prompt           Shows a prompt to add entry, instead of opening the
+                         text editor
+  --help                 Show this message and exit.
+```
+
 #### Adding alias
 
 ```
@@ -48,7 +61,7 @@ The variables for date and time are [those from python's `strftime`](https://doc
 
 Description of the ENV variables:
 
-**QUICKDIARY_FILENAME** - Is the diary filename; it willbe created if it doesn't exist.
+**QUICKDIARY_FILENAME** - Is the diary filename; it will be created if it doesn't exist.
 
 **QUICKDIARY_DATE_FORMAT** - Is the date format. It is added one time a day, when the first entry of the day is added.
 
@@ -56,9 +69,9 @@ Description of the ENV variables:
 
 **QUICKDIARY_EDITOR** - When in editor mode (without `--prompt`), this will be the editor with which edit the new entry. (Default for env's $EDITOR, expecting it is `vim`/`nvim`)
 
-**QUICKDIARY_EDITOR_PARAMS** - These are the parameter to be passed to the editor before the diary file name. Defaults to vim '+norm GA' which in *normal mode* (**+norm**) *goes to the end of the file* (**G**) and to the end of that line (**A**). As said before, it is expected the user uses vim, otherwise these parameters need to be changed or nulled, like this way:
+**QUICKDIARY_EDITOR_PARAMS** - These are the parameters to be passed to the editor before the diary file name. Defaults to *vim*'s "**+norm GA**" which in *normal mode* (**+norm**) *goes to the end of the file* (**G**) and to the end of that line (**A**). As said before, it is expected the user uses vim, otherwise these parameters need to be changed or nulled, like this way:
 
 
-```
+```sh
 export QUICKDIARY_EDITOR_PARAMS=""
 ```
