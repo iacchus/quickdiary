@@ -17,7 +17,7 @@ ENVNAME_DIARY_FILENAME="QUICKDIARY_FILENAME"
 ENVNAME_DATE_FORMAT="QUICKDIARY_DATE_FORMAT"
 ENVNAME_TIME_FORMAT="QUICKDIARY_TIME_FORMAT"
 ENVNAME_EDITOR="QUICKDIARY_EDITOR"
-ENVNAME_EDITOR_PARAMS="QUICKDIARY_PARAMS"
+ENVNAME_EDITOR_PARAMS="QUICKDIARY_EDITOR_PARAMS"
 
 #
 # DEFAULT constants
@@ -54,23 +54,23 @@ PRESET_EDITOR_PARAMS = os.getenv(key=ENVNAME_EDITOR_PARAMS,
 @click.option("--prompt", "-p", "prompt", is_flag=True)
 def cli(filename, prompt):
 
-    # day_of_month is the day of the month without the zero padding
+    # `day_of_month` is the day of the month without the zero padding
     day_of_month = str(int(DATETIME.strftime("%d")))
 
     # `date` is like "Wednesday, February 16, 2022" (before the first entry
-    #    of the day)
+    #     of the day)
     date = str(DATETIME.strftime(PRESET_DATE_FORMAT
                                  .format(day_of_month=day_of_month)))
     # `time` is like "18:51:22: " (before each entry)
     time = str(DATETIME.strftime(PRESET_TIME_FORMAT))
 
-    # `date_hash` isthe SHASUM256(date), used as a signature so a current date
-    # entered by the user on a single line don't gets confused as a timestamp
-    # marking
+    # `date_hash` is the SHASUM256(date), used as a signature so a current date
+    #     entered by the user on a single line don't gets confused as a
+    #     timestamp marking
     date_hash = sha256(date.encode("utf-8")).hexdigest()
-    
+
     # `date_hash_string` is the string which will be added each new day, only
-    # once a day (unless you change `date` format)
+    #     once a day (unless you change `date` format)
     date_hash_string = "{date} [{date_hash}]".format(date=date,
                                                  date_hash=date_hash)
 
@@ -78,6 +78,8 @@ def cli(filename, prompt):
 
     diary_file_exists = os.path.exists(filename_path)
 
+    # will we use our embedded prompt for the entry or, intead, the user is
+    #     going to use his $EDITOR?
     if prompt:
         text = click.prompt('Add your entry for {}: '.format(time))
     else:
@@ -85,7 +87,9 @@ def cli(filename, prompt):
 
     add_date = bool(True)
 
-    if diary_file_exists:  # then check if the current date was already added
+    if diary_file_exists:  # then check if the current date was already added,
+                           #     if not we will add it later
+                           #     (`date_hash_string`)
         with open(os.path.expanduser(filename_path), 'r') as diary_file:
             for line in diary_file:
                 if date_hash_string == line.strip():
@@ -97,16 +101,18 @@ def cli(filename, prompt):
         click.echo("Writing to file '{filename_path}'"
                    .format(filename_path=filename_path))
 
-        if add_date:  # is this the first entry of the day? then add date
+        if add_date:  # is this the first entry of the day? then add the date
             diary_file.write ("{date_hash_string}"
                               .format(date_hash_string=date_hash_string))
 
+        # add entry "HH:MM:SS: "
         diary_file.write ("\n\n{time}".format(time=time))
 
         if text:  # text was entered by prompt
             diary_file.write(text)
 
-    if not text:  # then text will be entered manually
+    if not text:  # then text will be entered manually via PRESET_EDITOR
+                  #     which is shell's `$EDITOR` or our `ENVNAME_EDITOR` env
         subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
 

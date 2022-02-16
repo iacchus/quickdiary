@@ -31,3 +31,17 @@ The name is long because is expected the user to create his own alias, for examp
 ```
 alias qd='quickdiary'
 ```
+
+## Environment Variables
+
+These variables can be set in you env to change quicidiary defaults.
+
+```
+export QUICKDIARY_FILENAME="~/diary.quickdiary"
+export QUICKDIARY_DATE_FORMAT="%A, %B {day_of_month}, %Y"
+export QUICKDIARY_TIME_FORMAT "%H:%M:%S: "
+export QUICKDIARY_EDITOR="$EDITOR"
+export QUICKDIARY_EDITOR_PARAMS="+norm GA"  # in vim, go to the end of the last line
+```
+
+The variables for date and time are [those from python's `strftime`](https://docs.python.org/3/library/datetime.html?highlight=strftime#strftime-and-strptime-format-codes)
