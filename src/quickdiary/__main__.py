@@ -51,21 +51,37 @@ PRESET_EDITOR_PARAMS = os.getenv(key=ENVNAME_EDITOR_PARAMS,
 @click.command()
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME)
-@click.option("--text", "-t", "text", is_flag=True)
-def cli(filename, text):
+@click.option("--prompt", "-p", "prompt", is_flag=True)
+def cli(filename, prompt):
 
-    day_of_month = str(int(DATETIME.strftime("%d")))  # without the 0 padding
+    # day_of_month is the day of the month without the zero padding
+    day_of_month = str(int(DATETIME.strftime("%d")))
+
+    # `date` is like "Wednesday, February 16, 2022" (before the first entry
+    #    of the day)
     date = str(DATETIME.strftime(PRESET_DATE_FORMAT
                                  .format(day_of_month=day_of_month)))
+    # `time` is like "18:51:22: " (before each entry)
     time = str(DATETIME.strftime(PRESET_TIME_FORMAT))
 
+    # `date_hash` isthe SHASUM256(date), used as a signature so a current date
+    # entered by the user on a single line don't gets confused as a timestamp
+    # marking
     date_hash = sha256(date.encode("utf-8")).hexdigest()
+    
+    # `date_hash_string` is the string which will be added each new day, only
+    # once a day (unless you change `date` format)
     date_hash_string = "{date} [{date_hash}]".format(date=date,
                                                  date_hash=date_hash)
 
     filename_path = os.path.expanduser(filename)
 
     diary_file_exists = os.path.exists(filename_path)
+
+    if prompt:
+        text = click.prompt('Add your entry for {}: '.format(time))
+    else:
+        text = None
 
     add_date = bool(True)
 
@@ -74,18 +90,24 @@ def cli(filename, text):
             for line in diary_file:
                 if date_hash_string == line.strip():
                     add_date = False
-    print("File '{}' doesn't exist. Creating...".format(filename_path))
+    else:
+        print("File '{}' doesn't exist. Creating...".format(filename_path))
+
     with open(filename_path, 'a+') as diary_file:
         click.echo("Writing to file '{filename_path}'"
                    .format(filename_path=filename_path))
 
-        if add_date:
+        if add_date:  # is this the first entry of the day? then add date
             diary_file.write ("{date_hash_string}"
                               .format(date_hash_string=date_hash_string))
 
         diary_file.write ("\n\n{time}".format(time=time))
 
-    subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
+        if text:  # text was entered by prompt
+            diary_file.write(text)
+
+    if not text:  # then text will be entered manually
+        subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
 
 if __name__ == "__main__":
