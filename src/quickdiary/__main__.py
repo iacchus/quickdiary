@@ -16,18 +16,22 @@ from . import DATETIME
 ENVNAME_DIARY_FILENAME="QUICKDIARY_FILENAME"
 ENVNAME_DATE_FORMAT="QUICKDIARY_DATE_FORMAT"
 ENVNAME_TIME_FORMAT="QUICKDIARY_TIME_FORMAT"
+ENVNAME_EDITOR="QUICKDIARY_EDITOR"
+ENVNAME_EDITOR_PARAMS="QUICKDIARY_PARAMS"
 
 #
 # DEFAULT constants
 #
-#DEFAULT_DIARY_FILENAME = os.path.expanduser("~/diary.quickdiary")
 DEFAULT_DIARY_FILENAME = "~/diary.quickdiary"
 
 DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))  # without the zero padding
 DEFAULT_DATE_FORMAT = "%A, %B {day_of_month}, %Y"
 
-#DEFAULT_TIME_FORMAT = str(DATETIME.strftime("%H:%M:%S"))
 DEFAULT_TIME_FORMAT = "%H:%M:%S: "
+
+DEFAULT_EDITOR = os.getenv('EDITOR')
+DEFAULT_EDITOR_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
+
 
 #
 # PRESET constants
@@ -38,34 +42,11 @@ PRESET_DATE_FORMAT = os.getenv(key=ENVNAME_DATE_FORMAT,
                                   default=DEFAULT_DATE_FORMAT)
 PRESET_TIME_FORMAT = os.getenv(key=ENVNAME_TIME_FORMAT,
                                   default=DEFAULT_TIME_FORMAT)
+PRESET_EDITOR = os.getenv(key=ENVNAME_EDITOR,
+                                  default=DEFAULT_EDITOR)
+PRESET_EDITOR_PARAMS = os.getenv(key=ENVNAME_EDITOR_PARAMS,
+                                  default=DEFAULT_EDITOR_PARAMS)
 
-
-#DIARY_FILE_EXISTS = os.path.exists(DIARY_FILENAME)
-
-#DATETIME = datetime.datetime.now()
-#DATE = str(DATETIME.date())
-#TIMEMS = str(DATETIME.time())
-#DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))  # without the zero padding
-
-#DATE = str(DATETIME.strftime("%A, %B {day_of_month}, %Y"
-#           .format(day_of_month=DAY_OF_MONTH)))
-#TIME = str(DATETIME.strftime("%H:%M:%S"))
-#DATE = str(DATETIME.strftime(PRESET_DATE_FORMAT))
-#TIME = str(DATETIME.strftime(PRESET_TIME_FORMAT))
-
-#DATE_HASH = sha256(DATE.encode("utf-8")).hexdigest()
-#DATE_HASH_STRING = "{date} [{date_hash}]".format(date=DATE,
-#                                                 date_hash=DATE_HASH)
-
-EDITOR = os.getenv('EDITOR')
-EDITOR_OPTIONS = "+norm GA"  # go to the end of the file
-
-
-#if DIARY_FILE_EXISTS:  # then check if the current date was already added
-#    with open(DIARY_FILENAME, 'r') as diary_file:
-#        for line in diary_file:
-#            if DATE_HASH_STRING == line.strip():
-#                add_date = False
 
 @click.command()
 @click.option("--file", "-f", "filename", type=str,
@@ -104,7 +85,7 @@ def cli(filename, text):
 
         diary_file.write ("\n\n{time}".format(time=time))
 
-    subprocess.call([EDITOR, EDITOR_OPTIONS, filename_path])
+    subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
 
 if __name__ == "__main__":
