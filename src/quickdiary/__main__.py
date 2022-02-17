@@ -93,7 +93,10 @@ def already_has_current_date_entry(filename):
 # │ quickdiary │
 # └────────────┘
 
-@click.group()
+main_epilog = "Quickly write diary entries via command-line."
+@click.group(epilog=main_epilog,
+             options_metavar='[options]',
+             subcommand_metavar='<command> [--help]')
 def quickdiary():
     pass
 
