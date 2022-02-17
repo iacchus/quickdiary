@@ -6,6 +6,11 @@
 
 Simple command to add timestamped entries to a text file using `$EDITOR`.
 
+[![Maintenance](https://img.shields.io/maintenance/yes/2022.svg?style=flat-square)](https://github.com/iacchus/quickdiary/issues/new?title=Is+quickdiary+still+maintained&body=Please+file+an+issue+if+the+maintained+button+says+no)
+[![PyPI Status](https://img.shields.io/pypi/status/quickdiary.svg?style=flat-square&label=pypi-status)](https://pypi.python.org/pypi/quickdiary)
+[![PyPI Version](https://img.shields.io/pypi/v/quickdiary.svg?style=flat-square)](https://pypi.python.org/pypi/quickdiary)
+[![PyPI Python Versions](https://img.shields.io/pypi/pyversions/quickdiary.svg?style=flat-square)](https://pypi.python.org/pypi/quickdiary)
+
 ## Requirements
 
 * GNU/Linux
@@ -26,7 +31,7 @@ quickdiary
 
 The name is long because is expected the user to create his own alias, for example, add to `.bashcr` or `.zshrc` or similar:
 
-**If no filename is given** in the command-line/command alias, it defaults to `~/diary.quickdiary`. Why such an absurd name and place, you may ask? That's because we think it is better the user itself in their alias to choose his own filenames for diaries as needed; we. though, suggest you use one of the file extensions `.quickdiary` or `.qdiary` so that it is easier to find the files later on the filesystem, being that you can have various different diaries with different names in different places.
+**If no filename is given** in the command-line/command alias, it defaults to `~/diary.quickdiary`. Why such an absurd name and place, you may ask? That's because we think it is better the user itself in their alias to choose his own filenames for diaries as needed; we, though, suggest you use one of the file extensions `.quickdiary` or `.qdiary` so that it is easier to find the files later on the filesystem, being that you can have various different diaries with different names in different places.
 
 #### Adding alias
 
