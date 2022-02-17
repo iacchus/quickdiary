@@ -152,10 +152,13 @@ Description of the ENV variables:
 
 **QUICKDIARY_TIME_FORMAT** - It is the time format for each entry. It is added before each entry.
 
-**QUICKDIARY_EDITOR** - When in editor mode (without `--prompt`), this will be the editor with which edit the new entry. (Default for env's $EDITOR, expecting it is `vim`/`nvim`)
+**QUICKDIARY_EDITOR** - When in `edit` mode, this will be the editor with which edit the new entry. (Default for env's $EDITOR, expecting it is `vim`/`nvim`)
 
 **QUICKDIARY_EDITOR_PARAMS** - These are the parameters to be passed to the editor before the diary file name. Defaults to *vim*'s "**+norm GA**" which in *normal mode* (**+norm**) *goes to the end of the file* (**G**) and to the end of that line (**A**). As said before, it is expected the user uses vim, otherwise these parameters need to be changed or nulled, like this way:
 
+**QUICKDIARY_PAGER** - It is the pager used in `pager` mode.
+
+**QUICKDIARY_PAGER_PARAMS** - These are the pager parameters for the pager in `pager` mode.
 
 ```sh
 export QUICKDIARY_EDITOR_PARAMS=""
