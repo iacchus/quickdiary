@@ -88,9 +88,10 @@ def already_has_current_date_entry(filename):
 def quickdiary():
     pass
 
-# ┌───────┐
-# │ write │
-# └───────┘
+                                                                    # ┌───────┐
+                                                                    # │ write │
+                                                                    # └───────┘
+
 
 write_epilog = "Writes to diary file using $EDITOR or ${}"\
                .format(ENVNAME_EDITOR)
@@ -135,6 +136,7 @@ def write(filename, prompt):
 # │ prompt │
 # └────────┘
 
+
 prompt_epilog = "Prompts for the text to add to the diary."
 @quickdiary.command(epilog=prompt_epilog)
 @click.option("--file", "-f", "filename", type=str,
@@ -173,9 +175,10 @@ def prompt(filename, text):
 
         diary_file.write(text)
 
-# ┌──────┐
-# │ edit │
-# └──────┘
+                                                                     # ┌──────┐
+                                                                     # │ edit │
+                                                                     # └──────┘
+
 @quickdiary.command()
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
@@ -190,6 +193,7 @@ def edit(filename):
 # ┌───────┐
 # │ pager │
 # └───────┘
+
 @quickdiary.command()
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
@@ -200,9 +204,10 @@ def pager(filename):
 
     pass
 
-# ┌─────┐
-# │ cat │
-# └─────┘
+                                                                      # ┌─────┐
+                                                                      # │ cat │
+                                                                      # └─────┘
+
 @quickdiary.command()
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
