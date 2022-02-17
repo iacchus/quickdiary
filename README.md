@@ -20,30 +20,113 @@ pip install quickdiary
 
 ## Usage
 
-```
+```sh
 quickdiary
 ```
 
 The name is long because is expected the user to create his own alias, for example, add to `.bashcr` or `.zshrc` or similar:
-
-## Options
-
-```
-$ quickdiary --help
-Usage: quickdiary [OPTIONS]
-
-Options:
-  -f, --file <filename>  File to add entry
-  -p, --prompt           Shows a prompt to add entry, instead of opening the
-                         text editor
-  --help                 Show this message and exit.
-```
 
 #### Adding alias
 
 ```
 alias qd='quickdiary'
 ```
+
+## Options
+
+```sh
+$ quickdiary --help
+Usage: quickdiary [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  cat     Prints the diary file to stdout.
+  edit    Opens the diary file in $EDITOR or $QUICKDIARY_EDITOR.
+  pager   Opens the diary file in $PAGER or $QUICKDIARY_PAGER.
+  prompt  Prompts for the entry to be added to the diary.
+  write   Writes to diary using configured editor.
+```
+
+You also can see each command's help using `quickdiary <command> --help`, *eg*.:
+
+### quickdiary write
+
+```sh
+$ quickdiary write --help
+Usage: quickdiary write [OPTIONS]
+
+  Writes to diary using configured editor.
+
+Options:
+  -f, --file <filename>  File to add entry
+  --help                 Show this message and exit.
+
+  Writes to diary file using $EDITOR or $QUICKDIARY_EDITOR
+```
+
+### quickdiary prompt
+
+```sh
+$ quickdiary prompt --help
+Usage: quickdiary prompt [OPTIONS]
+
+  Prompts for the entry to be added to the diary.
+
+Options:
+  -f, --file <filename>  File to add entry
+  -t, --text <text>      Text entry to write to the diary
+  --help                 Show this message and exit.
+
+  Prompts for the text to add to the diary.
+```
+
+### quickdiary edit
+
+```sh
+$ quickdiary edit --help
+Usage: quickdiary edit [OPTIONS]
+
+  Opens the diary file in $EDITOR or $QUICKDIARY_EDITOR.
+
+Options:
+  -f, --file <filename>  File to add entry
+  --help                 Show this message and exit.
+
+  Opens the diary file in the configured text editor.
+```
+
+### quickdiary pager
+
+```sh
+$ quickdiary pager --help
+Usage: quickdiary pager [OPTIONS]
+
+  Opens the diary file in $PAGER or $QUICKDIARY_PAGER.
+
+Options:
+  -f, --file <filename>  File to add entry
+  --help                 Show this message and exit.
+
+  Opens the diary file in the configured environment pager.
+```
+
+### quickdiary cat
+
+```sh
+$ quickdiary cat --help
+Usage: quickdiary cat [OPTIONS]
+
+  Prints the diary file to stdout.
+
+Options:
+  -f, --file <filename>  File to add entry
+  --help                 Show this message and exit.
+
+  Prints the diary file to stdout.
+```
+
 
 ## Environment Variables
 
@@ -55,6 +138,8 @@ export QUICKDIARY_DATE_FORMAT="%A, %B {day_of_month}, %Y"
 export QUICKDIARY_TIME_FORMAT "%H:%M:%S: "
 export QUICKDIARY_EDITOR="$EDITOR"
 export QUICKDIARY_EDITOR_PARAMS="+norm GA"  # in vim, go to the end of the last line
+export QUICKDIARY_PAGER="$PAGER"
+export QUICKDIARY_PAGER_PARAMS=""
 ```
 
 The variables for date and time are [those from python's `strftime`](https://docs.python.org/3/library/datetime.html?highlight=strftime#strftime-and-strptime-format-codes)

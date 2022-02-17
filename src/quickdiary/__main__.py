@@ -29,7 +29,7 @@ DEFAULT_DIARY_FILENAME = "~/diary.quickdiary"
 DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))  # without the zero padding
 DEFAULT_DATE_FORMAT = "%A, %B {day_of_month}, %Y"
 
-DEFAULT_TIME_FORMAT = "%H:%M:%S: "
+DEFAULT_TIME_FORMAT = "%H:%M:%S"
 
 DEFAULT_EDITOR = os.getenv('EDITOR')
 DEFAULT_EDITOR_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
@@ -82,7 +82,7 @@ def already_has_current_date_entry(filename):
 
     has_date = False
 
-    with open(os.path.expanduser(filename_path), 'r') as diary_file:
+    with open(os.path.expanduser(filename), 'r') as diary_file:
         for line in diary_file:
             if DATE_HASH_STRING == line.strip():
                 has_date = True
@@ -107,10 +107,7 @@ write_epilog = "Writes to diary file using $EDITOR or ${}"\
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
-@click.option("--prompt", "-p", "prompt", is_flag=True,
-              help="Shows a prompt to add entry, instead of opening"\
-                   " the text editor.")
-def write(filename, prompt):
+def write(filename):
     """Writes to diary using configured editor.
     """
 
@@ -134,7 +131,7 @@ def write(filename, prompt):
                               .format(date_hash_string=DATE_HASH_STRING))
 
         # add entry "HH:MM:SS: "
-        diary_file.write ("\n\n{time}".format(time=TIME))
+        diary_file.write ("\n\n{time}: ".format(time=TIME))
 
     subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
@@ -147,7 +144,8 @@ prompt_epilog = "Prompts for the text to add to the diary."
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
-@click.option("--text", "-t", "text", type=str, prompt=True,
+@click.option("--text", "-t", "text", type=str,
+              prompt="{date}\n{time}".format(date=DATE, time=TIME),
               metavar="<text>", help="Text entry to write to the diary")
 def prompt(filename, text):
     """Prompts for the entry to be added to the diary.
@@ -175,9 +173,7 @@ def prompt(filename, text):
                               .format(date_hash_string=DATE_HASH_STRING))
 
         # add entry "HH:MM:SS: " and the text
-        diary_file.write ("\n\n{time}{text}".format(time=TIME, text=text))
-
-        #diary_file.write(text)
+        diary_file.write ("\n\n{time}: {text}".format(time=TIME, text=text))
 
 # ┌──────┐
 # │ edit │
@@ -189,7 +185,7 @@ edit_epilog = "Opens the diary file in the configured text editor."
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
 def edit(filename):
-    """Opens the diary file in editor.
+    """Opens the diary file in $EDITOR or $QUICKDIARY_EDITOR.
     """
 
     filename_path = os.path.expanduser(filename)
@@ -211,7 +207,7 @@ pager_epilog = "Opens the diary file in the configured environment pager."
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
 def pager(filename):
-    """Opens the diary file in $PAGER.
+    """Opens the diary file in $PAGER or $QUICKDIARY_PAGER.
     """
 
     filename_path = os.path.expanduser(filename)
