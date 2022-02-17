@@ -183,16 +183,16 @@ Description of the ENV variables:
 export QUICKDIARY_EDITOR_PARAMS=""
 ```
 
-## Develpoment & Philosophy
+## Development & Philosophy
 
 The idea is having a simple program to manage quick diary entries or notes, time stamped.
 
 Notes should be able to comply to all of these:
 
-* Quick to add, *eg*.: terminal command-alias `qd` -> type text line -> press enter, done; inserted in date and with current time.
-* Possibility to rich-edit using editor, *eg*: type alias `qde` -> open text editor with the cursor in place -> edit -> save, done. This withouth corrupting the following:
-* Easily readable programatically, so we can program features over the notes.
-* Easily human-readable.
+* ***Quick to add***, *eg*.: terminal command-alias `qd` -> type text line -> press `enter`, done; inserted in date and with current time.
+* ***Possibility to rich-edit*** using editor, *eg*: type alias `qde` -> open text editor with the cursor in place -> edit -> save, done. This without corrupting the following:
+* ***Easily readable programatically***, so we can program features over the notes.
+* ***Easily human-readable***.
 * After and only after all these, should be customizable.
 
 So new features will be developed based on these points.
