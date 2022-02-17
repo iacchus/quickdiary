@@ -26,11 +26,15 @@ quickdiary
 
 The name is long because is expected the user to create his own alias, for example, add to `.bashcr` or `.zshrc` or similar:
 
+**If no filename is given** in the command-line/command alias, it defaults to `~/diary.quickdiary`. Why such an absurd name and place, you may ask? That's because we think it is better the user itself in their alias to choose his own filenames for diaries as needed; we. though, suggest you use one of the file extensions `.quickdiary` or `.qdiary` so that it is easier to find the files later on the filesystem, being that you can have various different diaries with different names in different places.
+
 #### Adding alias
 
 ```
-alias qd='quickdiary'
+alias qd='quickdiary prompt'
 ```
+
+Then you use the command `qd` to quickly add a timestamped text entry.
 
 ## Options
 
