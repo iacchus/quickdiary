@@ -4,7 +4,7 @@
 #from os import getenv
 import os
 from hashlib import sha256
-import datetime
+#import datetime
 import subprocess
 import click
 
@@ -20,6 +20,8 @@ ENVNAME_EDITOR="QUICKDIARY_EDITOR"
 ENVNAME_EDITOR_PARAMS="QUICKDIARY_EDITOR_PARAMS"
 ENVNAME_PAGER="QUICKDIARY_PAGER"
 ENVNAME_PAGER_PARAMS="QUICKDIARY_PAGER_PARAMS"
+ENVNAME_PRE_DATE_STRING="QUICKDIARY_PRE_DATE_STRING"
+ENVNAME_PRE_ENTRY_STRING="QUICKDIARY_PRE_ENTRY_STRING"
 
 #
 # DEFAULT constants
@@ -38,6 +40,9 @@ DEFAULT_EDITOR_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
 DEFAULT_PAGER = os.getenv('PAGER')
 DEFAULT_PAGER_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
 
+DEFAULT_PRE_DATE_STRING="\n\n"
+DEFAULT_PRE_ENTRY_STRING="\n\n"
+
 #
 # PRESET constants
 #
@@ -55,6 +60,11 @@ PRESET_PAGER = os.getenv(key=ENVNAME_PAGER,
                          default=DEFAULT_PAGER)
 PRESET_PAGER_PARAMS = os.getenv(key=ENVNAME_PAGER_PARAMS,
                                 default=DEFAULT_PAGER_PARAMS)
+PRESET_PRE_DATE_STRING = os.getenv(key=ENVNAME_PRE_DATE_STRING,
+                                   default=DEFAULT_PRE_DATE_STRING)
+PRESET_PRE_ENTRY_STRING = os.getenv(key=ENVNAME_PRE_ENTRY_STRING,
+                                    default=DEFAULT_PRE_ENTRY_STRING)
+
 
 # `day_of_month` is the day of the month without the zero padding
 DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))
@@ -74,7 +84,7 @@ DATE_HASH = sha256(DATE.encode("utf-8")).hexdigest()
 # `date_hash_string` is the string which will be added each new day, only
 #     once a day (unless you change `date` format)
 DATE_HASH_STRING = "{date} [{date_hash}]".format(date=DATE,
-                                             date_hash=DATE_HASH)
+                                                 date_hash=DATE_HASH)
 
 def already_has_current_date_entry(filename):
     """Looks in file for a line containing `DATE_HASH_STRING`
@@ -93,7 +103,7 @@ def already_has_current_date_entry(filename):
 # │ quickdiary │
 # └────────────┘
 
-main_epilog = "Quickly write diary entries via command-line."
+main_epilog = "Quickdiary - Quickly write diary entries via command-line."
 @click.group(epilog=main_epilog,
              options_metavar='[options]',
              subcommand_metavar='<command> [--help]')
@@ -132,13 +142,15 @@ def write(filename):
 
         if not has_date:  # is this the first entry of the day?
                           #     then add the date, `DATE_HASH_STRING`
-            pre_date = "\n\n" if not new_file else ""
+            pre_date = PRESET_PRE_DATE_STRING if not new_file else ""
             diary_file.write ("{pre_date}{date_hash_string}"
                               .format(pre_date=pre_date,
                                       date_hash_string=DATE_HASH_STRING))
 
-        # add entry "HH:MM:SS: "
-        diary_file.write ("\n\n{time}: ".format(time=TIME))
+        # add pre_entry + timestamp
+        diary_file.write ("{pre_entry}{time}: "
+                          .format(pre_entry=PRESET_PRE_ENTRY_STRING,
+                                  time=TIME))
 
     subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
@@ -178,13 +190,15 @@ def prompt(filename, text):
 
         if not has_date:  # is this the first entry of the day?
                           #     then add the date, `DATE_HASH_STRING`
-            pre_date = "\n\n" if not new_file else ""
+            pre_date = PRESET_PRE_DATE_STRING if not new_file else ""
             diary_file.write ("{pre_date}{date_hash_string}"
                               .format(pre_date=pre_date,
                                       date_hash_string=DATE_HASH_STRING))
 
-        # add entry "HH:MM:SS: " and the text
-        diary_file.write ("\n\n{time}: {text}".format(time=TIME, text=text))
+        # add pre_entry + timestamp + text
+        diary_file.write ("{pre_entry}{time}: {text}"
+                          .format(pre_entry=PRESET_PRE_ENTRY_STRING, time=TIME,
+                                  text=text))
 
 # ┌──────┐
 # │ edit │

@@ -153,6 +153,8 @@ export QUICKDIARY_EDITOR="$EDITOR"
 export QUICKDIARY_EDITOR_PARAMS="+norm GA"  # in vim, go to the end of the last line
 export QUICKDIARY_PAGER="$PAGER"
 export QUICKDIARY_PAGER_PARAMS=""
+export QUICKDIARY_PRE_DATE_STRING="\n\n"  # only if it's not a new file
+export QUICKDIARY_PRE_ENTRY_STRING="\n\n"
 ```
 
 The variables for date and time are [those from python's `strftime`](https://docs.python.org/3/library/datetime.html?highlight=strftime#strftime-and-strptime-format-codes)
@@ -172,6 +174,10 @@ Description of the ENV variables:
 **QUICKDIARY_PAGER** - It is the pager used in `pager` mode.
 
 **QUICKDIARY_PAGER_PARAMS** - These are the pager parameters for the pager in `pager` mode.
+
+**QUICKDIARY_PRE_DATE_STRING** - String to add before dates to saparate from the past items etc. Newlines. It is not added when on a new file, as in this case there are no previous items.
+
+**QUICKDIARY_PRE_ENTRY_STRING** - String to add before diary entries to separate them from the past items; how many newlines to separate them etc.
 
 ```sh
 export QUICKDIARY_EDITOR_PARAMS=""
