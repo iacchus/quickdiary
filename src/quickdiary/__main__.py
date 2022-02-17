@@ -10,9 +10,11 @@ import click
 
 from . import DATETIME
 
-#
-# ENVIRONMENT NAME constants
-#
+
+# ┌────────────────────────────┐
+# │ ENVIRONMENT NAME constants │
+# └────────────────────────────┘
+
 ENVNAME_DIARY_FILENAME="QUICKDIARY_FILENAME"
 ENVNAME_DATE_FORMAT="QUICKDIARY_DATE_FORMAT"
 ENVNAME_TIME_FORMAT="QUICKDIARY_TIME_FORMAT"
@@ -23,9 +25,11 @@ ENVNAME_PAGER_PARAMS="QUICKDIARY_PAGER_PARAMS"
 ENVNAME_PRE_DATE_STRING="QUICKDIARY_PRE_DATE_STRING"
 ENVNAME_PRE_ENTRY_STRING="QUICKDIARY_PRE_ENTRY_STRING"
 
-#
-# DEFAULT constants
-#
+
+# ┌───────────────────┐
+# │ DEFAULT constants │
+# └───────────────────┘
+
 DEFAULT_DIARY_FILENAME = "~/diary.quickdiary"
 
 DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))  # without the zero padding
@@ -36,16 +40,19 @@ DEFAULT_TIME_FORMAT = "%H:%M:%S"
 DEFAULT_EDITOR = os.getenv('EDITOR')
 DEFAULT_EDITOR_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
 
-
 DEFAULT_PAGER = os.getenv('PAGER')
 DEFAULT_PAGER_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
 
 DEFAULT_PRE_DATE_STRING="\n\n"
 DEFAULT_PRE_ENTRY_STRING="\n\n"
 
-#
-# PRESET constants
-#
+
+# ┌──────────────────┐
+# │ PRESET constants │
+# └──────────────────┘
+# These constants will default to the DEFAULT constants if the user's current
+#     `ENVNAME_` value environment variable is not set, will use it otherwise.
+
 PRESET_DIARY_FILENAME = os.getenv(key=ENVNAME_DIARY_FILENAME,
                                   default=DEFAULT_DIARY_FILENAME)
 PRESET_DATE_FORMAT = os.getenv(key=ENVNAME_DATE_FORMAT,
@@ -64,7 +71,6 @@ PRESET_PRE_DATE_STRING = os.getenv(key=ENVNAME_PRE_DATE_STRING,
                                    default=DEFAULT_PRE_DATE_STRING)
 PRESET_PRE_ENTRY_STRING = os.getenv(key=ENVNAME_PRE_ENTRY_STRING,
                                     default=DEFAULT_PRE_ENTRY_STRING)
-
 
 # `day_of_month` is the day of the month without the zero padding
 DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))
@@ -86,8 +92,11 @@ DATE_HASH = sha256(DATE.encode("utf-8")).hexdigest()
 DATE_HASH_STRING = "{date} [{date_hash}]".format(date=DATE,
                                                  date_hash=DATE_HASH)
 
+
 def already_has_current_date_entry(filename):
-    """Looks in file for a line containing `DATE_HASH_STRING`
+    """Looks in file for a line containing `DATE_HASH_STRING`, which means that
+        the current today's date was already added, so we don't add again, only
+        the time.
     """
 
     has_date = False
@@ -99,16 +108,19 @@ def already_has_current_date_entry(filename):
 
     return has_date
 
+
 # ┌────────────┐
 # │ quickdiary │
 # └────────────┘
 
-main_epilog = "Quickdiary - Quickly write diary entries via command-line."
+main_epilog = "quickdiary - Quickly write diary entries via command-line.\n"\
+              "<https://github.com/iacchus/quickdiary>"
 @click.group(epilog=main_epilog,
              options_metavar='[options]',
              subcommand_metavar='<command> [--help]')
 def quickdiary():
     pass
+
 
 # ┌───────┐
 # │ write │
@@ -153,6 +165,7 @@ def write(filename):
                                   time=TIME))
 
     subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
+
 
 # ┌────────┐
 # │ prompt │
@@ -200,6 +213,7 @@ def prompt(filename, text):
                           .format(pre_entry=PRESET_PRE_ENTRY_STRING, time=TIME,
                                   text=text))
 
+
 # ┌──────┐
 # │ edit │
 # └──────┘
@@ -222,6 +236,7 @@ def edit(filename):
     else:
         subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
+
 # ┌───────┐
 # │ pager │
 # └───────┘
@@ -243,6 +258,7 @@ def pager(filename):
         click.echo("File '{}' doesn't exist.".format(filename_path))
     else:
         subprocess.call([PRESET_PAGER, PRESET_PAGER_PARAMS, filename_path])
+
 
 # ┌─────┐
 # │ cat │
@@ -268,6 +284,10 @@ def cat(filename):
             for line in diary_file:
                 click.echo(line, nl=False)
 
+# ┌─────────────────────────────┐
+# │ if __name__ == "__main__".. │
+# └─────────────────────────────┘
 
 if __name__ == "__main__":
+
     quickdiary()
