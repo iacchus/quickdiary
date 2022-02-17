@@ -117,8 +117,10 @@ def write(filename):
 
     if diary_file_exists:
         has_date = already_has_current_date_entry(filename_path)
+        new_file = False
     else:
         has_date = False
+        new_file = True
         click.echo("Creating new file '{}'...".format(filename_path))
 
     with open(filename_path, 'a+') as diary_file:
@@ -127,8 +129,10 @@ def write(filename):
 
         if not has_date:  # is this the first entry of the day?
                           #     then add the date, `DATE_HASH_STRING`
-            diary_file.write ("\n\n{date_hash_string}"
-                              .format(date_hash_string=DATE_HASH_STRING))
+            pre_date = "\n\n" if not new_file else ""
+            diary_file.write ("{pre_date}{date_hash_string}"
+                              .format(pre_date=pre_date,
+                                      date_hash_string=DATE_HASH_STRING))
 
         # add entry "HH:MM:SS: "
         diary_file.write ("\n\n{time}: ".format(time=TIME))
@@ -159,8 +163,10 @@ def prompt(filename, text):
 
     if diary_file_exists:
         has_date = already_has_current_date_entry(filename_path)
+        new_file = False
     else:
         has_date = False
+        new_file = True
         click.echo("Creating new file '{}'...".format(filename_path))
 
     with open(filename_path, 'a+') as diary_file:
@@ -169,8 +175,10 @@ def prompt(filename, text):
 
         if not has_date:  # is this the first entry of the day?
                           #     then add the date, `DATE_HASH_STRING`
-            diary_file.write ("\n\n{date_hash_string}"
-                              .format(date_hash_string=DATE_HASH_STRING))
+            pre_date = "\n\n" if not new_file else ""
+            diary_file.write ("{pre_date}{date_hash_string}"
+                              .format(pre_date=pre_date,
+                                      date_hash_string=DATE_HASH_STRING))
 
         # add entry "HH:MM:SS: " and the text
         diary_file.write ("\n\n{time}: {text}".format(time=TIME, text=text))
