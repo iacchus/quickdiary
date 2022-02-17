@@ -47,15 +47,18 @@ PRESET_EDITOR = os.getenv(key=ENVNAME_EDITOR,
 PRESET_EDITOR_PARAMS = os.getenv(key=ENVNAME_EDITOR_PARAMS,
                                   default=DEFAULT_EDITOR_PARAMS)
 
+@click.group()
+def quickdiary():
+    pass
 
-@click.command()
+@quickdiary.command()
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
 @click.option("--prompt", "-p", "prompt", is_flag=True,
               help="Shows a prompt to add entry, instead of opening"\
                    " the text editor.")
-def cli(filename, prompt):
+def write(filename, prompt):
 
     # `day_of_month` is the day of the month without the zero padding
     day_of_month = str(int(DATETIME.strftime("%d")))
@@ -105,7 +108,7 @@ def cli(filename, prompt):
                    .format(filename_path=filename_path))
 
         if add_date:  # is this the first entry of the day? then add the date
-            diary_file.write ("{date_hash_string}"
+            diary_file.write ("\n\n{date_hash_string}"
                               .format(date_hash_string=date_hash_string))
 
         # add entry "HH:MM:SS: "
@@ -119,5 +122,36 @@ def cli(filename, prompt):
         subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
 
+@quickdiary.command()
+@click.option("--file", "-f", "filename", type=str,
+              default=PRESET_DIARY_FILENAME, metavar="<filename>",
+              help="File to add entry")
+def prompt(filename):
+    pass
+
+
+@quickdiary.command()
+@click.option("--file", "-f", "filename", type=str,
+              default=PRESET_DIARY_FILENAME, metavar="<filename>",
+              help="File to add entry")
+def edit(filename):
+    pass
+
+
+@quickdiary.command()
+@click.option("--file", "-f", "filename", type=str,
+              default=PRESET_DIARY_FILENAME, metavar="<filename>",
+              help="File to add entry")
+def pager(filename):
+    pass
+
+
+@quickdiary.command()
+@click.option("--file", "-f", "filename", type=str,
+              default=PRESET_DIARY_FILENAME, metavar="<filename>",
+              help="File to add entry")
+def cat(filename):
+    pass
+
 if __name__ == "__main__":
-    cli()
+    quickdiary()
