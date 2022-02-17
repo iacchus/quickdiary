@@ -18,6 +18,8 @@ ENVNAME_DATE_FORMAT="QUICKDIARY_DATE_FORMAT"
 ENVNAME_TIME_FORMAT="QUICKDIARY_TIME_FORMAT"
 ENVNAME_EDITOR="QUICKDIARY_EDITOR"
 ENVNAME_EDITOR_PARAMS="QUICKDIARY_EDITOR_PARAMS"
+ENVNAME_PAGER="QUICKDIARY_PAGER"
+ENVNAME_PAGER_PARAMS="QUICKDIARY_PAGER_PARAMS"
 
 #
 # DEFAULT constants
@@ -33,19 +35,26 @@ DEFAULT_EDITOR = os.getenv('EDITOR')
 DEFAULT_EDITOR_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
 
 
+DEFAULT_PAGER = os.getenv('PAGER')
+DEFAULT_PAGER_PARAMS = "+norm GA"  # this is for vim: go to the end of the file
+
 #
 # PRESET constants
 #
 PRESET_DIARY_FILENAME = os.getenv(key=ENVNAME_DIARY_FILENAME,
                                   default=DEFAULT_DIARY_FILENAME)
 PRESET_DATE_FORMAT = os.getenv(key=ENVNAME_DATE_FORMAT,
-                                  default=DEFAULT_DATE_FORMAT)
+                               default=DEFAULT_DATE_FORMAT)
 PRESET_TIME_FORMAT = os.getenv(key=ENVNAME_TIME_FORMAT,
-                                  default=DEFAULT_TIME_FORMAT)
+                               default=DEFAULT_TIME_FORMAT)
 PRESET_EDITOR = os.getenv(key=ENVNAME_EDITOR,
-                                  default=DEFAULT_EDITOR)
+                          default=DEFAULT_EDITOR)
 PRESET_EDITOR_PARAMS = os.getenv(key=ENVNAME_EDITOR_PARAMS,
-                                  default=DEFAULT_EDITOR_PARAMS)
+                                 default=DEFAULT_EDITOR_PARAMS)
+PRESET_PAGER = os.getenv(key=ENVNAME_PAGER,
+                         default=DEFAULT_PAGER)
+PRESET_PAGER_PARAMS = os.getenv(key=ENVNAME_PAGER_PARAMS,
+                                default=DEFAULT_PAGER_PARAMS)
 
 # `day_of_month` is the day of the month without the zero padding
 DAY_OF_MONTH = str(int(DATETIME.strftime("%d")))
@@ -64,8 +73,8 @@ DATE_HASH = sha256(DATE.encode("utf-8")).hexdigest()
 
 # `date_hash_string` is the string which will be added each new day, only
 #     once a day (unless you change `date` format)
-DATE_HASH_STRING = "{date} [{date_hash}]".format(DATE=date,
-                                             date_hash=DATE_hash)
+DATE_HASH_STRING = "{date} [{date_hash}]".format(date=DATE,
+                                             date_hash=DATE_HASH)
 
 def already_has_current_date_entry(filename):
     """Looks in file for a line containing `DATE_HASH_STRING`
@@ -88,10 +97,9 @@ def already_has_current_date_entry(filename):
 def quickdiary():
     pass
 
-                                                                    # ┌───────┐
-                                                                    # │ write │
-                                                                    # └───────┘
-
+# ┌───────┐
+# │ write │
+# └───────┘
 
 write_epilog = "Writes to diary file using $EDITOR or ${}"\
                .format(ENVNAME_EDITOR)
@@ -110,13 +118,11 @@ def write(filename, prompt):
 
     diary_file_exists = os.path.exists(filename_path)
 
-    add_date = bool(True)
-
     if diary_file_exists:
         has_date = already_has_current_date_entry(filename_path)
     else:
         has_date = False
-        print("Creating new file '{}'...".format(filename_path))
+        click.echo("Creating new file '{}'...".format(filename_path))
 
     with open(filename_path, 'a+') as diary_file:
         click.echo("Writing to file '{filename_path}'"
@@ -136,15 +142,13 @@ def write(filename, prompt):
 # │ prompt │
 # └────────┘
 
-
 prompt_epilog = "Prompts for the text to add to the diary."
 @quickdiary.command(epilog=prompt_epilog)
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
 @click.option("--text", "-t", "text", type=str, prompt=True,
-              metavar="<text>",
-              help="Text entry to write to the diary")
+              metavar="<text>", help="Text entry to write to the diary")
 def prompt(filename, text):
     """Prompts for the entry to be added to the diary.
     """
@@ -153,13 +157,13 @@ def prompt(filename, text):
 
     diary_file_exists = os.path.exists(filename_path)
 
-    text = click.prompt('{}:'.format(TIME))
+    #text = click.prompt('{}:'.format(TIME))
 
     if diary_file_exists:
         has_date = already_has_current_date_entry(filename_path)
     else:
         has_date = False
-        print("Creating new file '{}'...".format(filename_path))
+        click.echo("Creating new file '{}'...".format(filename_path))
 
     with open(filename_path, 'a+') as diary_file:
         click.echo("Writing to file '{filename_path}'"
@@ -170,16 +174,17 @@ def prompt(filename, text):
             diary_file.write ("\n\n{date_hash_string}"
                               .format(date_hash_string=DATE_HASH_STRING))
 
-        # add entry "HH:MM:SS: "
-        diary_file.write ("\n\n{time}".format(time=TIME))
+        # add entry "HH:MM:SS: " and the text
+        diary_file.write ("\n\n{time}{text}".format(time=TIME, text=text))
 
-        diary_file.write(text)
+        #diary_file.write(text)
 
-                                                                     # ┌──────┐
-                                                                     # │ edit │
-                                                                     # └──────┘
+# ┌──────┐
+# │ edit │
+# └──────┘
 
-@quickdiary.command()
+edit_epilog = "Opens the diary file in the configured text editor."
+@quickdiary.command(epilog=edit_epilog)
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
@@ -187,14 +192,21 @@ def edit(filename):
     """Opens the diary file in editor.
     """
 
+    filename_path = os.path.expanduser(filename)
 
-    pass
+    diary_file_exists = os.path.exists(filename_path)
+
+    if not diary_file_exists:
+        click.echo("File '{}' doesn't exist.".format(filename_path))
+    else:
+        subprocess.call([PRESET_EDITOR, PRESET_EDITOR_PARAMS, filename_path])
 
 # ┌───────┐
 # │ pager │
 # └───────┘
 
-@quickdiary.command()
+pager_epilog = "Opens the diary file in the configured environment pager."
+@quickdiary.command(epilog=pager_epilog)
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
@@ -202,13 +214,21 @@ def pager(filename):
     """Opens the diary file in $PAGER.
     """
 
-    pass
+    filename_path = os.path.expanduser(filename)
 
-                                                                      # ┌─────┐
-                                                                      # │ cat │
-                                                                      # └─────┘
+    diary_file_exists = os.path.exists(filename_path)
 
-@quickdiary.command()
+    if not diary_file_exists:
+        click.echo("File '{}' doesn't exist.".format(filename_path))
+    else:
+        subprocess.call([PRESET_PAGER, PRESET_PAGER_PARAMS, filename_path])
+
+# ┌─────┐
+# │ cat │
+# └─────┘
+
+cat_epilog = "Prints the diary file to stdout."
+@quickdiary.command(epilog=cat_epilog)
 @click.option("--file", "-f", "filename", type=str,
               default=PRESET_DIARY_FILENAME, metavar="<filename>",
               help="File to add entry")
@@ -216,7 +236,17 @@ def cat(filename):
     """Prints the diary file to stdout.
     """
 
-    pass
+    filename_path = os.path.expanduser(filename)
+
+    diary_file_exists = os.path.exists(filename_path)
+
+    if not diary_file_exists:
+        click.echo("File '{}' doesn't exist.".format(filename_path))
+    else:
+        with open(filename_path, 'r') as diary_file:
+            for line in diary_file:
+                click.echo(line, nl=False)
+
 
 if __name__ == "__main__":
     quickdiary()
