@@ -41,6 +41,14 @@ The name is long because is expected the user to create his own alias, for examp
 
 ```
 alias qd='quickdiary prompt'
+alias qdc='quickdiary cat'
+```
+
+or even shorter
+
+```
+alias a='quickdiary prompt'  # 'a' for add
+alias v='quickdiary cat'  # 'v' for view
 ```
 
 Then you use the command `qd` to quickly add a timestamped text entry.
