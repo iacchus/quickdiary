@@ -2,7 +2,7 @@
 
 | **Licensed with [GNU AGPLv3](https://github.com/iacchus/agplv3-resources/blob/master/LICENSE/LICENSE)**                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [![agpl3](https://raw.githubusercontent.com/iacchus/agplv3-resources/main/LICENSE/agplv3-155x51.png)](https://github.com/iacchus/quickdiary/blob/main/LICENSE.txt) |
+| [![agpl3](https://raw.githubusercontent.com/birdears/birdears/master/docs/_static/img/agplv3-155x51.png)](https://github.com/iacchus/quickdiary/blob/main/LICENSE.txt) |
 
 Simple command to add timestamped entries to a text file using `$EDITOR`.
 
